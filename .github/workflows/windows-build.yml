@@ -1,0 +1,46 @@
+
+name: Build Nexus Music Player
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'NexusMusicPlayer/**'
+      - '.github/workflows/windows-build.yml'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Instalar Qt 6
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.3'
+          host: windows
+          target: desktop
+          arch: win64_msvc2022_64
+          modules: qtmultimedia
+
+      - name: Configurar projeto
+        run: cmake -S NexusMusicPlayer -B NexusMusicPlayer/build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Compilar EXE
+        run: cmake --build NexusMusicPlayer/build --config Release --parallel
+
+      - name: Preparar programa
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path package
+          Copy-Item "NexusMusicPlayer/build/Release/NexusMusicPlayer.exe" "package/"
+          windeployqt --release --compiler-runtime --dir package package/NexusMusicPlayer.exe
+
+      - name: Disponibilizar EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: NexusMusicPlayer-Windows-x64
+          path: package/
+          if-no-files-found: error
