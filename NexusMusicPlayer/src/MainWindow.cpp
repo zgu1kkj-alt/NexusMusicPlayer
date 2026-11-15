@@ -43,7 +43,7 @@ QSlider::groove:horizontal{height:5px;background:#30364a;border-radius:2px;}
 QSlider::sub-page:horizontal{background:#9675f4;border-radius:2px;}
 QSlider::handle:horizontal{background:#fff;width:12px;margin:-5px 0;border-radius:6px;}
 QStatusBar{background:#10131e;color:#9da5bd;}
-)");
+)";
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),settings(this),player(new MusicPlayer(this)),video(new VideoPlayer(this)){
     setWindowTitle("Nexus Music Player");resize(1280,800);setMinimumSize(920,620);setAcceptDrops(true);setStyleSheet(STYLE);
